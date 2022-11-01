@@ -48,6 +48,25 @@ const run = async() => {
             res.send(result)  
         })
 
+        // update user info put method
+        app.put('/users/:id', async(req, res)=> {
+            const id= req.params.id;
+            const filter = {_id: ObjectId(id)};
+            const user = req.body;
+            // console.log(user)
+            const option = {upsert: true};
+            const updateUser = {
+                $set: {
+                    name: user.name,
+                    address: user.address,
+                    email: user.email
+                }
+            }
+            const result = await userCollection.updateOne(filter, updateUser, option);
+            console.log(result)
+            res.send(result)
+        })
+
         // deleted method api 
         app.delete('/users/:id', async(req, res)=> {
             const id = req.params.id;
@@ -57,6 +76,9 @@ const run = async() => {
             res.send(result)
         })
     }
+    catch{(error)=> {
+        console.log(error.message)
+    }}
     finally{
         // alert('successfully added');
     }
