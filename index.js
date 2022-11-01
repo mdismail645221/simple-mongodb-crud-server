@@ -17,13 +17,29 @@ const run = async() => {
     try{
         const userCollection = client.db('Simple-node-server').collection('users');
 
+        // CRUD ER ...R == READ API KORA HOLO
         app.get('/users', async(req, res)=>{
             const query = {};
+            // console.log(query)
             const cursor = userCollection.find(query);
+            // console.log(cursor)
             const users = await cursor.toArray();
             res.send(users)
         })
 
+// ইউজার মধ্যে আইড়ি দিয়ে তাকে ফাইন্ড করে তার সকল তথ্য নিয়ে আসার জন্য MONGODB findOne নামে একটি অপারেশন চালায়। 
+        app.get('/users/:id', async(req, res)=> {
+            const id = req.params.id;
+            const query =  {_id: ObjectId(id)};
+            // console.log(query)
+            const result = await userCollection.findOne(query);
+            // console.log(result)
+            res.send(result)
+        })
+
+
+        
+        // crud er = C . ER MAINING HOSCCE CREATE KORA...TAI AKHANE CREATE API KORA HOLO...>
         app.post('/users', async(req, res)=> {
             const user = req.body;
             console.log(user)
@@ -32,15 +48,13 @@ const run = async() => {
             res.send(result)  
         })
 
-        // deleted method api
+        // deleted method api 
         app.delete('/users/:id', async(req, res)=> {
             const id = req.params.id;
-            // console.log('trying to id', id)
             const query = {_id: ObjectId(id)};
             const result = await userCollection.deleteOne(query);
             console.log(result);
             res.send(result)
-
         })
     }
     finally{
@@ -69,5 +83,5 @@ app.get('/', (req, res)=> {
 
 
 app.listen(port, ()=> {
-    console.log('database connected')
+    console.log('server is connected')
 })
